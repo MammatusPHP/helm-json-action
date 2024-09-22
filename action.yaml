@@ -1,0 +1,26 @@
+name: 'MammatusPHP Helm JSON'
+description: 'GitHub action getting you the JSON you need for your Helm deployments'
+branding:
+  icon: 'sunrise'
+  color: 'yellow'
+inputs:
+  workingDirectory:
+    description: Directory to execute the diff generator in
+    required: false
+    default: ''
+outputs:
+  helm-json:
+    description: The JSON from mammatus-helm-json
+    value: ${{ steps.mammatus-helm-json.outputs.helm-json }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+    - uses: WyriHaximus/github-action-composer-php-versions-in-range@v1
+      id: php-version
+    - name: Generate Mammatus JSON for Helm
+      id: mammatus-helm-json
+      shell: bash
+      run: |
+        docker run --rm -i -v "`pwd`:`pwd`" -w "`pwd`" ghcr.io/wyrihaximusnet/php:${{ steps.php-version.outputs.lowest }}-zts-alpine-dev composer install --no-scripts
+        echo "helm-json=$(docker run --rm -i -v "`pwd`:`pwd`" -w "`pwd`" ghcr.io/wyrihaximusnet/php:${{ steps.php-version.outputs.lowest }}-zts-alpine-dev php ./vendor/bin/mammatus-helm-json)" >> $GITHUB_OUTPUT

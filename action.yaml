@@ -8,6 +8,10 @@ inputs:
     description: Directory to execute the diff generator in
     required: false
     default: ''
+  valuesFiles:
+    description: Directory to execute the diff generator in
+    required: false
+    default: ''
 outputs:
   helm-json:
     description: The JSON from mammatus-helm-json
@@ -15,7 +19,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
     - uses: WyriHaximus/github-action-composer-php-versions-in-range@v1
       id: php-version
     - name: Generate Mammatus JSON for Helm
@@ -23,4 +26,4 @@ runs:
       shell: bash
       run: |
         docker run --rm -i -v "`pwd`:`pwd`" -w "`pwd`" ghcr.io/wyrihaximusnet/php:${{ steps.php-version.outputs.lowest }}-zts-alpine-dev composer install --no-scripts
-        echo "helm-json=$(docker run --rm -i -v "`pwd`:`pwd`" -w "`pwd`" ghcr.io/wyrihaximusnet/php:${{ steps.php-version.outputs.lowest }}-zts-alpine-dev php ./vendor/bin/mammatus-helm-json)" >> $GITHUB_OUTPUT
+        echo "helm-json=$(docker run --rm -i -v "`pwd`:`pwd`" -w "`pwd`" ghcr.io/wyrihaximusnet/php:${{ steps.php-version.outputs.lowest }}-zts-alpine-dev php ./vendor/bin/mammatus-helm-json ${{ inputs.valuesFiles }})" >> $GITHUB_OUTPUT

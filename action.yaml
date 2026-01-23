@@ -19,7 +19,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: WyriHaximus/github-action-composer-php-versions-in-range@1eff3298ad218e34b77fbda04efdcb4a38bb1a6a # v1.16.0
+    - uses: WyriHaximus/github-action-composer-php-versions-in-range@a9e96e340a4d33d626ec7cbdf25c4576d6e03a0c # v1.16.1
       id: php-version
     - name: Generate Mammatus JSON for Helm
       id: mammatus-helm-json
